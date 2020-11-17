@@ -1,0 +1,145 @@
+PRUEBAS UNITARIAS CON JEST: 
+============================
+
+========================================================================
+                  INSTALACIÓN CON NODE PARA JAVASCRIPT
+========================================================================
+
+Para instalar JEST (utilizando npm)
+
+- Primerarmente creo el proyecto: npm init.
+- Instalamos JEST: npm install --save-dev jest metiéndolo en las dependencias
+  del entorno de Desarrollo (en producción no lo utilizaremos).
+- Añadimos el siguiente script en package.json para las pruebas:
+  "test": "jest"
+- Ejecutamos los test con npm run test.
+
+=> Podemos ver la cobertura de código con npx jest --coverage o poniedo
+   npm test -- --coverage
+
+=> Puede crearse un fichero de configuración escribiendo npx jest --init
+   (el fichero se llama jest.config.js)
+
+¡Importante! Cuando tenemos código asíncrono, JEST necesita saber cuándo
+se ha completado el código que estamos probando, antes de poder pasar
+al siguiente caso de prueba.
+
+========================================================================
+                            CONCEPTOS
+========================================================================
+
+- describe: Define una agrupación de casos de prueba (opcional).
+- test (suites): Son los casos de prueba.
+- expect: Es lo que "esperamos" obtener al ejecutar cada test.
+- matchers: Expresiones para comparar el resultado obtenido con
+    lo que esperábamos conseguir para el caso de prueba:
+
+========================================================================
+                    MATCHERS (COMPARADORES)
+========================================================================
+
+  + .toBe(4) -> Verifica que sean iguales.
+  + .toEqual({one: 1, two: 2}) -> Para comparar con un objeto o matriz.
+  + .not.toBe(0) -> Para comparar que no sea cierto resultado.
+  + Comparaciones con null, undefined y defined:
+
+    toBeNull
+    toBeUndefined
+    toBeDefined
+
+  + Comparaciones con booleanos (que sea cierto o falso):
+    
+    toBeTruthy
+    toBeFalsy
+
+  + Comparación con números (mayor, menor, igual...):
+
+    expect(value).toBeGreaterThanOrEqual(3.5);
+    expect(value).toBeLessThan(5);
+    expect(value).toBeLessThanOrEqual(4.5);
+    expect(value).toEqual(4);
+
+  + Para evitar errores de redondeo en coma flotante:
+
+    expect(value).toBeCloseTo(0.3);
+
+  + Comparar cadenas con expresiones regulares:
+
+    expect('Christoph').toMatch(/stop/);
+ 
+  + Comarar que un iterable contiene un valor:
+    
+    expect(shoppingList).toContain('beer');
+
+  + Probar que una función devuelve un valor:
+    ¡Importante! Debemos envolver la llamada a la función en una función.
+
+    expect(() => compileAndroidCode()).toThrow(Error);
+    expect(() => compileAndroidCode()).toThrow('you are using the wrong JDK');
+    expect(() => compileAndroidCode()).toThrow(/JDK/);
+
+  ========================================================================
+      HACER COSAS ANTES y DESPUÉS DE CADA TEST (O DE TODOS LOS TESTS)
+  ========================================================================
+
+  - beforeEach y afterEach: Código que se realiza antes y después de
+      cada uno de los tests (Por ejemplo, inicializaciones y reseteos).
+  - beforeAll y afterAll: Se realizan una sóla vez las tareas antes de
+      todos los tests y/o después de todos los tests.
+
+  NOTA: Si tenemos bloques describe, cada uno de los anteriores aplica
+  dentro de cada contexto del describe (se tomaría cada describe como 
+  una unidad independiente).
+
+  (Si quremos ejecutar temporalmente SÓLO un test en concreto, podemos 
+   cambiarlo de test a test.only y después dejarlo como estaba).
+
+========================================================================
+      Hacer mock (simular) una función
+========================================================================
+
+Para cambiar la implementación real de una función que utilizamos en 
+nuestra prueba por una simulada, para evitar el acoplamiento y probar 
+sólo la funcionalidad de nuestra propia función. 
+
+Podemos hacerlo haciendo un mock a una función o a un módulo completo.
+
+- Hacer mock a una función:
+
+const mockCallback = jest.fn(x => 42 + x);
+forEach([0, 1], mockCallback);
+// The mock function is called twice
+expect(mockCallback.mock.calls.length).toBe(2);
+// The first argument of the first call to the function was 0
+expect(mockCallback.mock.calls[0][0]).toBe(0);
+// The return value of the first call to the function was 42
+expect(mockCallback.mock.results[0].value).toBe(42);
+
+(Ver documentación para más detalles).
+
+- Hacer mock a un módulo completo:
+
+import axios from 'axios';
+import Users from './users';
+
+jest.mock('axios');
+
+const resp = { data: users };
+axios.get.mockResolvedValue(resp);
+
+// or you could use the following depending on your use case:
+// axios.get.mockImplementation(() => Promise.resolve(resp))
+
+- Estos son algunos métodos que nos dicen cómo se ha llamado la func. mock:
+
+// The mock function was called at least once
+expect(mockFunc).toHaveBeenCalled();
+
+// The mock function was called at least once with the specified args
+expect(mockFunc).toHaveBeenCalledWith(arg1, arg2);
+
+// The last call to the mock function was called with the specified args
+expect(mockFunc).toHaveBeenLastCalledWith(arg1, arg2);
+
+// All calls and the name of the mock is written as a snapshot
+expect(mockFunc).toMatchSnapshot();

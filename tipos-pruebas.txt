@@ -1,0 +1,22 @@
+TIPOS DE TEST (AUTOMÁTIZADOS):
+------------------------------
+
+=> Test unitarios (Unit Test):
+  Probamos una parte aislada de nuestra aplicación. Recibimos un valor y esperamos un resultado concreto.
+
+=> Test de integración (Integration Test):
+  La ejecución de una parte del código depende de la ejecución de otra parte del mismo. Hay dependencias.
+
+=> End-to-End tests E2E - Aplicación completa o una parte de la misma:
+  Incluye también la interfaz de usuario.
+
+Direcciones:
+========================================
+
+- JEST (Pruebas unitarias y de integración): 
+  https://jestjs.io/
+- PUPPETEER (Pruebas E2E) - navegador sin cabeza (simula la interacción con el navegador).
+  https://developers.google.com/web/tools/puppeteer
+
+=> Hacer mock (burlar) en pruebas:
+  Consiste en sustituir llamadas, por ejemplo a un endpoint de una api, por un valor simulado sólo para los test.
